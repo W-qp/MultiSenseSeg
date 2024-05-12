@@ -1,0 +1,17 @@
+{ "1_input_img": ".../dataset/val/S0/",
+  "2_input_img": ".../dataset/val/DoLP/",
+  "3_input_img": ".../dataset/val/AoP/",
+  "4_input_img": ".../dataset/val/S1/",
+  "5_input_img": ".../dataset/val/S2/",
+  "6_input_img": ".../dataset/val/0/",
+  "7_input_img": ".../dataset/val/45/",
+  "8_input_img": ".../dataset/val/90/",
+  "9_input_img": ".../dataset/val/135/",
+
+  "ckpt": ".../runs/predict/ckpt/",
+  "runs": ".../runs/predict/",
+  "save_png": ".../runs/predict/png_results/",
+  "save_tif": ".../runs/predict/tif_results/",
+  "add_geo": ".../dataset/val/S0/",
+  "classes": ".../json/classes.json",
+  "crop": ".../runs/predict/crop_&_mask/"}

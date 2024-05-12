@@ -1,0 +1,8 @@
+{ "1_test_img": ".../dataset/test/modal1/",
+  "2_test_img": ".../dataset/test/modal2/",
+
+  "test_label": ".../dataset/test/gray_label/",
+
+  "runs": ".../runs/test/",
+  "classes": ".../json/classes.json",
+  "ckpt": ".../runs/test/ckpt/"}
