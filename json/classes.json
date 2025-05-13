@@ -1,11 +1,8 @@
 {
-    "building": [128, 0, 0],
-    "glass": [0, 128, 0],
-    "car": [128, 128, 0],
-    "road": [0, 0, 128],
-    "vegetation": [128, 0, 128],
-    "sky": [0, 128, 128],
-    "pedestrian": [128, 128, 128],
-    "bicycle": [64, 0, 0],
-    "background": [0, 0, 0]
+    "Impervious surfaces": [255, 255, 255],
+    "Building": [0, 0, 255],
+    "Low vegetation": [0, 255, 255],
+    "Tree": [0, 255, 0],
+    "Car": [255, 255, 0],
+    "Clutter/background": [255, 0, 0]
 }

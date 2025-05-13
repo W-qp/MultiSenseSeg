@@ -41,7 +41,7 @@ class PPM(nn.Module):
             nn.Sequential(
                 nn.AdaptiveMaxPool2d(pool_size),
                 nn.Conv2d(ppm_in_chans, out_chans, kernel_size=1, bias=False),
-                creat_norm_layer(norm_layer, out_chans),
+                # creat_norm_layer(norm_layer, out_chans),
                 act_layer(inplace=True) if act_layer != nn.GELU else act_layer()
             )for pool_size in pool_sizes)
 

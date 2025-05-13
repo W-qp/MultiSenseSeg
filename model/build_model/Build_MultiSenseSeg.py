@@ -91,6 +91,7 @@ class Build_MultiSenseSeg(nn.Module):
         self.depths = depths
         patch_size = to_2tuple(patch_size)
         self.num_layers = len(depths)
+        embed_dim = 64 if use_faster else embed_dim
         self.embed_dim = embed_dim
         self.patch_norm = patch_norm
         self.out_indices = out_indices
@@ -136,7 +137,7 @@ class Build_MultiSenseSeg(nn.Module):
             frozen_stages=frozen_stages,
             use_checkpoint=use_checkpoint,
             qkv_type=qkv_type,
-            ffn_type=ffn_type) if not use_faster else CNN_backbone()
+            ffn_type=ffn_type) if not use_faster else CNN_backbone(embed_dim)
 
         self.build_neck = Build_neck(
             in_chans=embed_dim,

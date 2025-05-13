@@ -7,7 +7,6 @@ import shutil
 import time
 import warnings
 import cv2
-import gdal
 import numpy as np
 import tifffile as tiff
 import torch
@@ -59,7 +58,7 @@ def mask_to_image(mask):
         image = Image.fromarray(image.astype(np.uint8))
 
     else:
-        image = Image.fromarray((mask * 255).astype(np.uint8))
+        image = Image.fromarray(((mask*-1 + 1) * 255).astype(np.uint8))
 
     return image
 
@@ -198,6 +197,7 @@ def concatenation(b):
 
 
 def create_tif(array, tif_dir, resultTif):
+    import gdal
     ori_tif = gdal.Open(tif_dir)
     trans = ori_tif.GetGeoTransform()
     proj = ori_tif.GetProjection()
@@ -236,18 +236,35 @@ def add_doc(dir):
 
 def get_args():
     parser = argparse.ArgumentParser(description='Predict', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--in_chans', type=int and tuple, default=(3, 3), help='Channels of input images')
-    parser.add_argument('--json_path', type=str, default=r".../predict.json", help='.json path')
+    parser.add_argument('--in_chans', type=str2tuple, default="3, 1", help='Channels of input images')
+    parser.add_argument('--json_path', type=str, default=r"./json/predict.json", help='.json path')
     parser.add_argument('--base_num', type=int, default=512, help='Crop to the size of the predicted images')
     parser.add_argument('--gpu_id', type=int, default=0, help='Number of gpu')
     parser.add_argument('--net_type', type=str, default='MultiSenseSeg', help='Net type')
     parser.add_argument('--if_save_tif', default=False, help='Whether to save the prediction .tif result')
-    parser.add_argument('--scale', type=float, default=1, help='Scale factor for the input images')
     return parser.parse_args()
+
+
+def str2tuple(string):
+    try:
+        string = string.strip().strip('()[]')
+        numbers = [int(x.strip()) for x in string.split(',')]
+        return tuple(numbers)
+    except:
+        raise argparse.ArgumentTypeError('Must be a tuple of integers, e.g., "3, 1" or "(3, 1)"')
+
+
+def create_path(path):
+    try:
+        os.mkdir(path)
+        print(f'Created directory: {path}')
+    except OSError:
+        pass
 
 
 if __name__ == '__main__':
     args = get_args()
+    create_path("./runs/predict")
     in_chans = args.in_chans
     n_img = len(in_chans) if isinstance(in_chans, tuple) else 1
     json_path = args.json_path
@@ -255,12 +272,10 @@ if __name__ == '__main__':
     gpu_id = args.gpu_id
     net_type = args.net_type
     save_tif = args.if_save_tif
-    scale = args.scale
     os.environ['CUDA_VISIBLE_DEVICES'] = str(gpu_id)
     assert os.path.exists(json_path), f"cannot find {json_path} file!"
     json_dict = json.load(open(json_path, 'r'))
     n_classes = len(json.load(open(json_dict['classes'], 'r')))
-    img_size = int(base_num * scale)
 
     if net_type == 'MultiSenseSeg':
         net = Build_MultiSenseSeg(n_classes=n_classes, in_chans=in_chans)
@@ -268,11 +283,12 @@ if __name__ == '__main__':
         raise NotImplementedError(f"net type:'{net_type}' does not exist, please check the 'net_type' arg!")
 
     logger(net_type, json_dict['runs'])
-    logging.info('Loading model {}'.format(json_dict['ckpt'] + f"{net_type}.pth"))
+    create_path(json_dict['runs'])
+    logging.info('Loading model {}'.format(json_dict['ckpt'] + f"{net_type}_best.pth"))
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     logging.info(f'Using device {device}')
     net.to(device=device)
-    net.load_state_dict(torch.load(json_dict['ckpt'] + f"{net_type}.pth", map_location=device))
+    net.load_state_dict(torch.load(json_dict['ckpt'] + f"{net_type}_best.pth", map_location=device))
     logging.info('Sliding window clipping...\n')
 
     add_doc(json_dict['crop'])
@@ -297,9 +313,11 @@ if __name__ == '__main__':
             pred_img.save(json_dict['crop'] + f"pred_imgs/pred_{idx_h}_{idx_w}.png")
 
         big_pred_img = concatenation(base_num)
+        create_path(json_dict['save_png'])
         cv2.imwrite(json_dict['save_png'] + f"{big_img_name}.png", big_pred_img)
 
         if save_tif:
+            create_path(json_dict['save_tif'])
             tif_img = cv2.cvtColor(big_pred_img.astype(np.uint8), cv2.COLOR_BGR2RGB) if net.n_classes > 2 else big_pred_img
             create_tif(tif_img, json_dict['add_geo'] + f"{big_img_name}.tif", json_dict['save_tif'] + f"{big_img_name}.tif")
 

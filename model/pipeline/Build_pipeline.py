@@ -179,13 +179,13 @@ class CNN_Block(nn.Module):
 
 
 class CNN_backbone(nn.Module):
-    def __init__(self):
+    def __init__(self, chans):
         super(CNN_backbone, self).__init__()
-        self.in_planes = 64
-        self.layer1 = self._make_layer(64, 3, stride=1)
-        self.layer2 = self._make_layer(128, 4, stride=2)
-        self.layer3 = self._make_layer(256, 6, stride=2)
-        self.layer4 = self._make_layer(512, 3, stride=2)
+        self.in_planes = chans
+        self.layer1 = self._make_layer(chans, 3, stride=1)
+        self.layer2 = self._make_layer(chans*2, 4, stride=2)
+        self.layer3 = self._make_layer(chans*4, 6, stride=2)
+        self.layer4 = self._make_layer(chans*8, 3, stride=2)
 
     def _make_layer(self, planes, blocks, stride):
         strides = [stride] + [1] * (blocks - 1)
