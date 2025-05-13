@@ -119,7 +119,6 @@ def train_net(net_type, net, device, epochs, batch_size, warm_epochs, lr, weight
             train_imgs.clear() if isinstance(train_imgs, list) else None
 
             if net.n_classes > 1:
-                list_format_loss_weight = None  ###
                 loss_weight = torch.FloatTensor(args.loss_weight).cuda() if args.loss_weight is not None else None
                 if net.aux:
                     criterion_main = ClsLoss(weight=loss_weight)
