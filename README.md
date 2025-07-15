@@ -94,16 +94,16 @@ python predict.py --in_chans "your_channel_numbers"
 
 ### Citation
 ```
-@article{WANG20243390750,
-title = {MultiSenseSeg: A cost-effective unified multimodal semantic segmentation model for remote sensing},
-journal = {IEEE Transactions on Geoscience and Remote Sensing},
-volume = {62},
-pages = {1-24},
-year = {2024},
-article number = {4703724},
-doi = {10.1109/TGRS.2024.3390750},
-author = {Qingpeng Wang and Wei Chen and Zhou Huang and Hongzhao Tang and Lan Yang},
-}
+@ARTICLE{10504922,
+  author={Wang, Qingpeng and Chen, Wei and Huang, Zhou and Tang, Hongzhao and Yang, Lan},
+  journal={IEEE Transactions on Geoscience and Remote Sensing}, 
+  title={MultiSenseSeg: A Cost-Effective Unified Multimodal Semantic Segmentation Model for Remote Sensing}, 
+  year={2024},
+  volume={62},
+  number={},
+  pages={1-24},
+  keywords={Semantic segmentation;Feature extraction;Remote sensing;Data models;Computational modeling;Costs;Semantics;Deep learning;low-cost increment;multimodal;remote sensing;semantic segmentation},
+  doi={10.1109/TGRS.2024.3390750}}
 ```
 
 ---
